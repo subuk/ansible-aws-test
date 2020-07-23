@@ -1,0 +1,4 @@
+- name: Setup commons
+  hosts: all
+  roles:
+    - {role: yum, tags: yum}

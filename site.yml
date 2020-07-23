@@ -1,0 +1,4 @@
+- import_playbook: setup_ec2.yml
+- import_playbook: setup_common.yml
+- import_playbook: setup_app.yml
+- import_playbook: setup_web.yml

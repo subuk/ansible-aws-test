@@ -1,0 +1,4 @@
+- name: Setup web servers
+  hosts: web
+  roles:
+    - {role: nginx, tags: nginx}

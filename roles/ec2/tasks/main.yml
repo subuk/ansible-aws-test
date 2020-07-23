@@ -1,0 +1,33 @@
+- name: Ensure security groups exist
+  ec2_group:
+    name: "{{ item.name }}"
+    description: "{{ item.desc }}"
+    vpc_id: "{{ ec2_vpc_id }}"
+    region: "{{ ec2_region }}"
+    rules: "{{ item.rules }}"
+  loop: '{{ ec2_security_groups }}'
+  loop_control:
+    label: '{{ item.name }}'
+  tags: ec2_security_groups
+
+- name: Setup aws ec2 instances
+  ec2_instance:
+    name: '{{ ec2_instance_name_prefix | default("") }}{{ item.name }}'
+    state: '{{ item.state | default("running") }}'
+    vpc_subnet_id: '{{ item.subnet }}'
+    instance_type: '{{ item.instance_type | default("t2.micro") }}'
+    image_id: '{{ item.ami }}'
+    region: '{{ ec2_region }}'
+    security_groups: '{{ item.security_groups }}'
+    tags: '{{ ec2_default_tags | default({}) | combine(item.get("tags", {})) }}'
+    key_name: '{{ ec2_key_name }}'
+    network:
+      assign_public_ip: '{{ item.assign_public_ip | default(False) }}'
+    volumes:
+      - device_name: /dev/sda1
+        ebs:
+          volume_size: 20
+          delete_on_termination: true
+  loop: '{{ ec2_instances }}'
+  loop_control:
+    label: '{{ item.name }}'

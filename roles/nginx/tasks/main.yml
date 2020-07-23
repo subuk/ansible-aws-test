@@ -1,0 +1,19 @@
+- name: Install nginx
+  yum: {name: nginx, state: present}
+
+- name: Configure selinux flags
+  seboolean: {name: httpd_can_network_connect, state: yes, persistent: yes}
+
+- name: Install nginx.conf
+  template: {src: nginx.conf.j2, dest: /etc/nginx/nginx.conf}
+  notify: reload nginx
+
+- name: Install nginx conf.d files
+  template: {src: "nginx_configs/{{ item.name }}.conf.j2", dest: "/etc/nginx/conf.d/{{ item.name }}.conf"}
+  notify: reload nginx
+  vars:
+    ctx: '{{ item.ctx | default({}) }}'
+  loop: '{{ nginx_configs }}'
+
+- name: Ensure nginx running and enabled
+  service: {name: nginx, state: started, enabled: yes}

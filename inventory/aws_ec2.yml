@@ -1,0 +1,15 @@
+plugin: aws_ec2
+regions: [eu-west-1]
+hostnames: private-ip-address
+filters:
+  tag:Project: test
+keyed_groups:
+  - key: tags.Group
+    prefix: ''
+    separator: ''
+  - prefix: az
+    key: 'placement.availability_zone'
+compose:
+  aws_tag_name: tags.Name
+  ansible_host: private_ip_address
+  availability_zone: 'placement.availability_zone | replace("-", "_")'

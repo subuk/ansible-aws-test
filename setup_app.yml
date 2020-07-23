@@ -1,0 +1,4 @@
+- name: Setup app servers
+  hosts: app
+  roles:
+    - {role: nginx, tags: nginx}

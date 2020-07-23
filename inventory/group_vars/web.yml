@@ -1,0 +1,4 @@
+nginx_configs:
+  - name: web
+    ctx:
+      upstream_servers: '{{ query("inventory_hostnames", "app:&az_" + availability_zone) }}'
